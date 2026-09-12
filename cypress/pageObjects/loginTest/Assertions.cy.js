@@ -45,6 +45,33 @@ class loginTestAssertions {
 
     return this;
   }
+
+  checkAuthenticatedDrugGroupingPage() {
+    cy.url().should("include", "/grouping/drug");
+    cy.findByTestId("page-grouping-drug").should("be.visible");
+    cy.findByTestId("app-shell").should("be.visible");
+
+    return this;
+  }
+
+  checkProtectedPageIsNotAccessible() {
+    this.checkLoginPageIsVisible();
+    cy.get('[data-testid="page-grouping-drug"]').should("not.exist");
+
+    return this;
+  }
+
+  checkUserIsLoggedOut() {
+    this.checkProtectedPageIsNotAccessible();
+
+    return this;
+  }
+
+  checkUserRemainsAuthenticatedAfterRefresh() {
+    this.checkAuthenticatedDrugGroupingPage();
+
+    return this;
+  }
 }
 
 export default loginTestAssertions;

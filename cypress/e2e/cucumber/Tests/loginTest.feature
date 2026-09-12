@@ -30,3 +30,30 @@ Feature: Login functionality
     Given I navigate to the login page
     When I click the Sign in button with empty credentials
     Then I should see required validation errors for email and password
+
+  Scenario: Access protected route without login
+    Given I open a protected route without logging in
+    Then I should be prevented from accessing the protected page
+
+  Scenario: Logout successfully
+    Given I navigate to the login page
+    When I sign in with the "sysadmin" account
+    Then I should see the authenticated drug grouping page
+    When I log out
+    Then I should be logged out
+
+  Scenario: Protected page cannot be accessed after logout
+    Given I navigate to the login page
+    When I sign in with the "sysadmin" account
+    Then I should see the authenticated drug grouping page
+    When I log out
+    Then I should be logged out
+    When I navigate back in the browser
+    Then I should be prevented from accessing the protected page
+
+  Scenario: Session persists after page refresh
+    Given I navigate to the login page
+    When I sign in with the "sysadmin" account
+    Then I should see the authenticated drug grouping page
+    When I refresh the authenticated page
+    Then I should remain authenticated after refresh

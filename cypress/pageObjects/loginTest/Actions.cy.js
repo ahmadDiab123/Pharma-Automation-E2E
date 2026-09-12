@@ -7,6 +7,14 @@ class loginTestActions {
     return this;
   }
 
+  openProtectedRouteWithoutLogin() {
+    cy.clearCookies();
+    cy.clearLocalStorage();
+    cy.visit("/grouping/drug");
+
+    return this;
+  }
+
   clearEmail() {
     cy.findByTestId("login-email-input").clear({ force: true });
 
@@ -84,6 +92,24 @@ class loginTestActions {
 
   clickOnSignInButton() {
     cy.findByTestId("login-submit-btn").click();
+
+    return this;
+  }
+
+  clickLogout() {
+    cy.findByTestId("signout-btn").click();
+
+    return this;
+  }
+
+  goBack() {
+    cy.go("back");
+
+    return this;
+  }
+
+  refreshAuthenticatedPage() {
+    cy.reload();
 
     return this;
   }
