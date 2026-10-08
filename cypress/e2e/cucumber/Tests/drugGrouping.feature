@@ -100,3 +100,42 @@ Feature: Drug Grouping
     Then the duplicate Custom Group name should be rejected
     When I return to the selected duplicate Custom Group search
     Then only the original Custom Group with the selected duplicate name should exist
+
+  @DG-22
+  Scenario: DG-22 Verify user can delete an automation-created Custom Group
+    Given I am logged in as the super super administrator
+    And I prepare a disposable automation Custom Group
+    And I create the disposable automation Custom Group
+    Then the disposable automation Custom Group should exist
+    When I open Delete for the disposable automation Custom Group
+    Then the Custom Group delete confirmation should be visible
+    When I confirm Custom Group deletion
+    And I search for the disposable automation Custom Group
+    Then the disposable automation Custom Group should be deleted
+
+  @DG-25
+  Scenario Outline: DG-25 Verify filtering Custom Drug Groups by status
+    When I filter Custom Groups by "<status>" status
+    Then only Custom Groups with "<status>" status should be displayed
+
+    Examples:
+      | status   |
+      | Active   |
+      | Inactive |
+
+  @DG-26
+  Scenario: DG-26 Verify user can cancel Custom Group deletion
+    Given I am logged in as the super super administrator
+    And I prepare a disposable automation Custom Group
+    And I create the disposable automation Custom Group
+    Then the disposable automation Custom Group should exist
+    When I open Delete for the disposable automation Custom Group
+    Then the Custom Group delete confirmation should be visible
+    When I cancel Custom Group deletion
+    Then the Custom Group delete confirmation should be closed
+    When I search for the disposable automation Custom Group
+    Then the disposable automation Custom Group should exist
+    When I open Delete for the disposable automation Custom Group
+    And I confirm Custom Group deletion
+    And I search for the disposable automation Custom Group
+    Then the disposable automation Custom Group should be deleted

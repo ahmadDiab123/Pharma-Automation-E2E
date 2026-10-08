@@ -1,0 +1,18 @@
+{
+  "id": "4c4d8ef4-b0bc-4748-bf09-d99bdb9705f4",
+  "name": "Cholera Care",
+  "groupKind": "custom",
+  "isSystemDefined": false,
+  "codeType": "diagnosis",
+  "description": "",
+  "status": "active",
+  "members": [
+    {
+      "memberKind": "code",
+      "codeType": "diagnosis",
+      "codeValue": "A00.0",
+      "childGroupId": null,
+      "childGroupName": null
+    }
+  ]
+}

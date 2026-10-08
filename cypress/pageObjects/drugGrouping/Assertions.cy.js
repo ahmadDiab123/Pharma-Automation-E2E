@@ -49,6 +49,93 @@ class drugGroupingAssertions {
     return this;
   }
 
+  checkAllCustomGroupsHaveStatus(status) {
+    const expectedStatus = status.toLowerCase();
+    const expectedLabel = status;
+
+    const checkCurrentPage = () => {
+      return cy.get('[data-testid^="group-row-"][data-group-name][data-group-kind="custom"]')
+        .should("have.length.at.least", 1)
+        .each(($row) => {
+          return cy.wrap($row)
+            .should("have.attr", "data-status", expectedStatus)
+            .find('[data-testid="group-row-status-label"]')
+            .should("contain.text", expectedLabel);
+        })
+        .then(() => {
+          return cy.findByTestId("grouping-pagination-next-btn").then(($nextButton) => {
+            if ($nextButton.is(":disabled")) {
+              return undefined;
+            }
+
+            return cy.findByTestId("grouping-pagination")
+              .invoke("attr", "data-page")
+              .then(Number)
+              .then((currentPage) => {
+                return cy.wrap($nextButton)
+                  .click()
+                  .then(() => {
+                    return cy.findByTestId("grouping-pagination")
+                      .should("have.attr", "data-page", String(currentPage + 1));
+                  })
+                  .then(checkCurrentPage);
+              });
+          });
+        });
+    };
+
+    cy.findByTestId("grouping-status-filter")
+      .should("have.attr", "data-value", expectedStatus)
+      .find(`[data-testid="grouping-status-filter-${expectedStatus}"]`)
+      .should("have.attr", "data-active", "true")
+      .and("have.attr", "aria-pressed", "true");
+    checkCurrentPage();
+
+    return this;
+  }
+
+  checkDisposableAutomationGroupExists() {
+    const groupName = Cypress.env("currentDeleteAutomationGroupName");
+
+    cy.get('[data-testid^="group-row-"][data-group-name][data-group-kind="custom"]')
+      .filter(`[data-group-name="${groupName}"]`)
+      .should("have.length", 1);
+
+    return this;
+  }
+
+  checkCustomGroupDeleteConfirmationIsVisible() {
+    const groupName = Cypress.env("currentDeleteAutomationGroupName");
+
+    cy.findByTestId("group-delete-modal").should("be.visible");
+    cy.findByTestId("group-delete-modal-title")
+      .should("be.visible")
+      .and("contain.text", groupName);
+
+    return this;
+  }
+
+  checkCustomGroupDeleteConfirmationIsClosed() {
+    cy.get("[data-testid=group-delete-modal]").should("not.exist");
+
+    return this;
+  }
+
+  checkDisposableAutomationGroupIsDeleted() {
+    const groupName = Cypress.env("currentDeleteAutomationGroupName");
+
+    cy.findByTestId("grouping-table").should(($table) => {
+      expect(
+        $table.find(
+          `[data-testid^="group-row-"][data-group-name="${groupName}"][data-group-kind="custom"]`
+        )
+      ).to.have.length(0);
+    });
+    cy.findByTestId("grouping-empty").should("be.visible");
+
+    return this;
+  }
+
   checkVisibleAutomationGroupStatusesWereToggled() {
     cy.then(() => {
       const expectedStatuses = Cypress.env("toggledAutomationGroupStatuses");

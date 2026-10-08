@@ -1,0 +1,14 @@
+{
+  "groupName": "Cholera Care",
+  "groupKind": "custom",
+  "codeType": "diagnosis",
+  "status": "active",
+  "members": [
+    {
+      "memberKind": "code",
+      "codeType": "diagnosis",
+      "codeValue": "A00.0",
+      "childGroupName": null
+    }
+  ]
+}

@@ -52,6 +52,35 @@ When("I search for automation Custom Groups", () => {
   drugGroupingAction.searchForAutomationGroups();
 });
 
+When("I filter Custom Groups by {string} status", (status) => {
+  drugGroupingAction.filterCustomGroupsByStatus(status);
+});
+
+Given("I prepare a disposable automation Custom Group", () => {
+  drugGroupingAction.prepareDisposableAutomationGroupName();
+});
+
+Given("I create the disposable automation Custom Group", () => {
+  drugGroupingAction.createDisposableAutomationGroup();
+  drugGroupingAction.searchForDisposableAutomationGroup();
+});
+
+When("I open Delete for the disposable automation Custom Group", () => {
+  drugGroupingAction.openDeleteForDisposableAutomationGroup();
+});
+
+When("I cancel Custom Group deletion", () => {
+  drugGroupingAction.cancelCustomGroupDelete();
+});
+
+When("I confirm Custom Group deletion", () => {
+  drugGroupingAction.confirmCustomGroupDelete();
+});
+
+When("I search for the disposable automation Custom Group", () => {
+  drugGroupingAction.searchForDisposableAutomationGroup();
+});
+
 When("I toggle the visible automation Custom Group statuses", () => {
   drugGroupingAction.toggleVisibleAutomationGroupStatuses();
 });
@@ -139,6 +168,26 @@ Then("the Custom Group empty state should be shown", () => {
 
 Then("the automation Custom Groups should be displayed", () => {
   drugGroupingAssertion.checkAutomationCustomGroupsAreDisplayed();
+});
+
+Then("only Custom Groups with {string} status should be displayed", (status) => {
+  drugGroupingAssertion.checkAllCustomGroupsHaveStatus(status);
+});
+
+Then("the disposable automation Custom Group should exist", () => {
+  drugGroupingAssertion.checkDisposableAutomationGroupExists();
+});
+
+Then("the Custom Group delete confirmation should be visible", () => {
+  drugGroupingAssertion.checkCustomGroupDeleteConfirmationIsVisible();
+});
+
+Then("the Custom Group delete confirmation should be closed", () => {
+  drugGroupingAssertion.checkCustomGroupDeleteConfirmationIsClosed();
+});
+
+Then("the disposable automation Custom Group should be deleted", () => {
+  drugGroupingAssertion.checkDisposableAutomationGroupIsDeleted();
 });
 
 Then("the visible automation Custom Group statuses should be toggled", () => {

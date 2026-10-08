@@ -23,6 +23,16 @@ class drugGroupingActions {
     return this.getTestData().baseGroupName;
   }
 
+  getCurrentDeleteAutomationGroupName() {
+    const groupName = Cypress.env("currentDeleteAutomationGroupName");
+
+    if (!groupName) {
+      throw new Error("A disposable automation Drug Grouping name has not been created.");
+    }
+
+    return groupName;
+  }
+
   getCurrentDuplicateAutomationGroupName() {
     const groupName = Cypress.env("currentDuplicateAutomationGroupName");
 
@@ -73,6 +83,82 @@ class drugGroupingActions {
 
   searchForAutomationGroups() {
     this.searchGroups(this.getAutomationGroupPrefix());
+
+    return this;
+  }
+
+  filterCustomGroupsByStatus(status) {
+    const filterTestIds = {
+      Active: "grouping-status-filter-active",
+      Inactive: "grouping-status-filter-inactive",
+    };
+    const filterTestId = filterTestIds[status];
+
+    if (!filterTestId) {
+      throw new Error(`Unsupported Custom Group status filter: ${status}`);
+    }
+
+    this.selectCustomGroupsTab();
+    cy.findByTestId("grouping-search-input").clear();
+    cy.findByTestId(filterTestId).click();
+
+    return this;
+  }
+
+  prepareDisposableAutomationGroupName() {
+    Cypress.env(
+      "currentDeleteAutomationGroupName",
+      `${this.getAutomationGroupPrefix()} Delete ${Date.now()}`
+    );
+
+    return this;
+  }
+
+  createDisposableAutomationGroup() {
+    const { initialDrugCodes, initialDescription } = this.getTestData();
+
+    this.openNewCustomGroupForm();
+    this.typeGroupName(this.getCurrentDeleteAutomationGroupName());
+    this.typeGroupDescription(initialDescription);
+    initialDrugCodes.forEach((code) => {
+      this.searchDrugCode(code);
+      this.selectDrugCode(code);
+    });
+    this.clickSaveGroup();
+
+    return this;
+  }
+
+  searchForDisposableAutomationGroup() {
+    this.searchGroups(this.getCurrentDeleteAutomationGroupName());
+
+    return this;
+  }
+
+  openDeleteForDisposableAutomationGroup() {
+    const groupName = this.getCurrentDeleteAutomationGroupName();
+
+    if (!groupName.startsWith(this.getAutomationGroupPrefix())) {
+      throw new Error("Refusing to delete a group that is not owned by automation.");
+    }
+
+    cy.get('[data-testid^="group-row-"][data-group-name][data-group-kind="custom"]')
+      .filter(`[data-group-name="${groupName}"]`)
+      .should("have.length", 1)
+      .find('[data-testid="group-row-delete-btn"]')
+      .click();
+
+    return this;
+  }
+
+  cancelCustomGroupDelete() {
+    cy.findByTestId("group-delete-cancel-btn").click();
+
+    return this;
+  }
+
+  confirmCustomGroupDelete() {
+    cy.findByTestId("group-delete-confirm-btn").click();
 
     return this;
   }
